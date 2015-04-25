@@ -19,6 +19,8 @@ namespace CSharpWrapperGenerator
 	{
 		public void Export(string directory, DoxygenParser doxygen, CSharpParser csharp)
 		{
+			Dictionary<string, string> coreNameToEngineName = new Dictionary<string, string>();
+
 			Action<string, string> save = (name, contents) =>
 			{
 				var path = Path.Combine(directory, name + "_Gen.cs");
@@ -35,13 +37,32 @@ namespace CSharpWrapperGenerator
 				save(e.Name, BuildEnum(e));
 			}
 
-			foreach(var c in csharp.ClassDefs)
+			var classException = new string[]
 			{
-				save(c.Name, BuildClass(c));
+				"Core", "Core_Imp", "ace_core", "ace_corePINVOKE"
+			};
+			foreach(var c in csharp.ClassDefs.Where(x => !classException.Contains(x.Name)))
+			{
+				var name = c.Name.StartsWith("Core") ? c.Name.Replace("Core", "") : c.Name;
+				save(name, BuildClass(c, coreNameToEngineName));
 			}
 		}
 
-		private string BuildClass(CSharpParser.ClassDef c)
+		private string BuildClass(CSharpParser.ClassDef c, Dictionary<string, string> coreNameToEngineName)
+		{
+			var exception = new string[]
+			{
+				"GetPtr", "getCPtr", "Dispose",
+			};
+
+			c.Methods.RemoveAll(x => exception.Contains(x.Name));
+
+			Dictionary<string, PropertyDef> properties = BuildProperties(c);
+			var template = new Templates.ClassGen(c, properties.Values);
+			return template.TransformText();
+		}
+
+		private static Dictionary<string, PropertyDef> BuildProperties(CSharpParser.ClassDef c)
 		{
 			var properties = new Dictionary<string, PropertyDef>();
 
@@ -84,8 +105,7 @@ namespace CSharpWrapperGenerator
 				}
 			}
 
-			var template = new Templates.ClassGen(c, properties.Values);
-			return template.TransformText();
+			return properties;
 		}
 
 		private string BuildEnum(DoxygenParser.EnumDef enumDef)

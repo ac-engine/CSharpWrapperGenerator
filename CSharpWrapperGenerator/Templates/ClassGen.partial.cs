@@ -9,10 +9,12 @@ namespace CSharpWrapperGenerator.Templates
 	partial class ClassGen
 	{
 		private readonly CSharpParser.ClassDef classDef;
+		private readonly string className;
 		private readonly IEnumerable<PropertyDef> properties;
 
-		internal ClassGen(CSharpParser.ClassDef classDef, IEnumerable<PropertyDef> properties)
+		internal ClassGen(string className, CSharpParser.ClassDef classDef, IEnumerable<PropertyDef> properties)
 		{
+			this.className = className;
 			this.classDef = classDef;
 			this.properties = properties;
 		}

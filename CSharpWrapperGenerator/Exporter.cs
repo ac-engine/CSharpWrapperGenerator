@@ -41,24 +41,57 @@ namespace CSharpWrapperGenerator
 			{
 				"Core", "Core_Imp", "ace_core", "ace_corePINVOKE"
 			};
-			foreach(var c in csharp.ClassDefs.Where(x => !classException.Contains(x.Name)))
+			csharp.ClassDefs.RemoveAll(x => classException.Contains(x.Name));
+
+			var beRemoved = new List<CSharpParser.ClassDef>();
+			foreach(var item in csharp.ClassDefs.Where(x => x.Name.EndsWith("_Imp")))
 			{
-				var name = c.Name.StartsWith("Core") ? c.Name.Replace("Core", "") : c.Name;
+				var newName = item.Name.Replace("_Imp", "");
+				beRemoved.Add(csharp.ClassDefs.Find(x => x.Name == newName));
+				coreNameToEngineName[item.Name] = newName;
+			}
+			beRemoved.ForEach(x => csharp.ClassDefs.Remove(x));
+
+			foreach(var item in csharp.ClassDefs.Where(x => x.Name.StartsWith("Core")))
+			{
+				coreNameToEngineName[item.Name] = item.Name.Replace("Core", "");
+			}
+
+			foreach(var c in csharp.ClassDefs)
+			{
+				var name = coreNameToEngineName.ContainsKey(c.Name) ? coreNameToEngineName[c.Name] : c.Name;
 				save(name, BuildClass(c, coreNameToEngineName));
 			}
 		}
 
 		private string BuildClass(CSharpParser.ClassDef c, Dictionary<string, string> coreNameToEngineName)
 		{
-			var exception = new string[]
+			var methodException = new string[]
 			{
-				"GetPtr", "getCPtr", "Dispose",
+				"GetPtr", "getCPtr", "Dispose", "Create"
 			};
 
-			c.Methods.RemoveAll(x => exception.Contains(x.Name));
+			c.Methods.RemoveAll(x => methodException.Contains(x.Name));
+
+			foreach(var method in c.Methods)
+			{
+				if(coreNameToEngineName.ContainsKey(method.ReturnType))
+				{
+					method.ReturnType = coreNameToEngineName[method.ReturnType];
+				}
+				foreach(var parameter in method.Parameters)
+				{
+					if(coreNameToEngineName.ContainsKey(parameter.Type))
+					{
+						parameter.Type = coreNameToEngineName[parameter.Type];
+					}
+				}
+			}
 
 			Dictionary<string, PropertyDef> properties = BuildProperties(c);
-			var template = new Templates.ClassGen(c, properties.Values);
+
+			var name = coreNameToEngineName.ContainsKey(c.Name) ? coreNameToEngineName[c.Name] : c.Name;
+			var template = new Templates.ClassGen(name, c, properties.Values);
 			return template.TransformText();
 		}
 

@@ -7,7 +7,7 @@ using System;
 
 namespace ace
 {
-	public partial class <#=classDef.Name #>
+	public partial class <#=className #>
 	{
 		private ace.swig.<#=classDef.Name #> coreInstance;
 

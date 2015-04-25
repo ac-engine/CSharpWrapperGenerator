@@ -31,7 +31,7 @@ namespace CSharpWrapperGenerator.Templates
             this.Write("using System;\r\n\r\nnamespace ace\r\n{\r\n\tpublic partial class ");
             
             #line 10 "D:\Documents\Repos\AceRepos\CSharpWrapperGenerator\CSharpWrapperGenerator\Templates\ClassGen.tt"
-            this.Write(this.ToStringHelper.ToStringWithCulture(classDef.Name));
+            this.Write(this.ToStringHelper.ToStringWithCulture(className));
             
             #line default
             #line hidden

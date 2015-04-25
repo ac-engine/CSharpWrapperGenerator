@@ -1,0 +1,37 @@
+﻿<#@ template language="C#" #>
+<#@ assembly name="System.Core" #>
+<#@ import namespace="System.Linq" #>
+<#@ import namespace="System.Text" #>
+<#@ import namespace="System.Collections.Generic" #>
+using System;
+
+namespace ace
+{
+	public partial class <#=classDef.Name #>
+	{
+		private ace.swig.<#=classDef.Name #> coreInstance;
+
+<#	foreach(var property in properties){ #>
+		public <#=property.Type #> <#=property.Name #>
+		{
+<#		if(property.HaveGetter){ #>
+			get { return coreInstance.Get<#=property.Name #>(); }
+<#		} #>
+<#		if(property.HaveSetter){ #>
+			set { coreInstance.Set<#=property.Name #>(value); }
+<#		} #>
+		}
+
+<#	} #>
+
+<#	foreach(var method in classDef.Methods){ #>
+<#		var parameterList = string.Join(", ", method.Parameters.Select(x => x.Type + " " + x.Name)); #>
+		public <#=method.ReturnType #> <#=method.Name #>(<#= parameterList#>)
+		{
+<#		var sendedParameterList = string.Join(", ", method.Parameters.Select(x => x.Name));#>
+			<#if(method.ReturnType != "void"){ #>return <#} #>coreInstance.<#=method.Name #>(<#=sendedParameterList #>);
+		}
+
+<#	} #>
+	}
+}

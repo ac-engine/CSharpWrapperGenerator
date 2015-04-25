@@ -22,7 +22,7 @@ namespace CSharpWrapperGenerator
 			csharpParser.Parse(cs);
 
 			var exporter = new Exporter();
-			exporter.Export("test.cs", doxygenParser, csharpParser);
+			exporter.Export("Gen/", doxygenParser, csharpParser);
 		}
 	}
 

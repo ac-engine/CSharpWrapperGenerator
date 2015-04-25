@@ -13,6 +13,7 @@ namespace CSharpWrapperGenerator
 	class CSharpParser
 	{
 		public List<EnumDef> Enumdefs = new List<EnumDef>();
+		public List<ClassDef> ClassDefs = new List<ClassDef>();
 
 		public void Parse(string[] pathes)
 		{
@@ -74,7 +75,47 @@ namespace CSharpWrapperGenerator
 				{
 					ParseEnum(enumSyntax, semanticModel);
 				}
+				if(classSyntax != null)
+				{
+					ParseClass(classSyntax);
+				}
 			}
+		}
+
+		void ParseClass(ClassDeclarationSyntax classSyntax)
+		{
+			var classDef = new ClassDef();
+			classDef.Name = classSyntax.Identifier.ValueText;
+
+			foreach(var member in classSyntax.Members)
+			{
+				var methodSyntax = member as MethodDeclarationSyntax;
+
+				if(methodSyntax != null)
+				{
+					classDef.Methods.Add(ParseMethod(methodSyntax));
+				}
+			}
+
+			ClassDefs.Add(classDef);
+		}
+
+		private MethodDef ParseMethod(MethodDeclarationSyntax methodSyntax)
+		{
+			var methodDef = new MethodDef();
+			methodDef.Name = methodSyntax.Identifier.ValueText;
+			methodDef.ReturnType = methodSyntax.ReturnType.GetText().ToString().Trim();
+
+			foreach(var parameter in methodSyntax.ParameterList.Parameters)
+			{
+				var parameterDef = new ParameterDef();
+				parameterDef.Name = parameter.Identifier.ValueText;
+				parameterDef.Type = parameter.Type.GetText().ToString().Trim();
+
+				methodDef.Parameters.Add(parameterDef);
+			}
+
+			return methodDef;
 		}
 
 		void ParseEnum(EnumDeclarationSyntax enumSyntax, SemanticModel semanticModel)
@@ -107,6 +148,40 @@ namespace CSharpWrapperGenerator
 		public class EnumMemberDef
 		{
 			public string Name = string.Empty;
+		}
+
+		public class ClassDef
+		{
+			public string Name = string.Empty;
+			public List<MethodDef> Methods = new List<MethodDef>();
+
+			public override string ToString()
+			{
+				return string.Format("ClassDef {0}, Method x{1}", Name, Methods.Count);
+			}
+		}
+
+		public class MethodDef
+		{
+			public string ReturnType = string.Empty;
+			public string Name = string.Empty;
+			public List<ParameterDef> Parameters = new List<ParameterDef>();
+
+			public override string ToString()
+			{
+				return string.Format("MethodDef {0}, Parameters x{1}", Name, Parameters.Count);
+			}
+		}
+
+		public class ParameterDef
+		{
+			public string Type = string.Empty;
+			public string Name = string.Empty;
+
+			public override string ToString()
+			{
+				return string.Format("ParameterDef {0} {1}", Type, Name);
+			}
 		}
 	}
 }

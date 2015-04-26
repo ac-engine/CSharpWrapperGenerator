@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Xml.Linq;
 
 namespace CSharpWrapperGenerator
 {
@@ -12,7 +13,8 @@ namespace CSharpWrapperGenerator
 	/// </summary>
 	class DoxygenParser
 	{
-		public List<EnumDef> Enumdefs = new List<EnumDef>();
+		public List<EnumDef> EnumDefs = new List<EnumDef>();
+		public List<ClassDef> ClassDefs = new List<ClassDef>();
 
 		public void AddNamespaceFile(string path)
 		{
@@ -65,22 +67,79 @@ namespace CSharpWrapperGenerator
 						edef.Members.Add(emd);
 					}
 
-					Enumdefs.Add(edef);
+					EnumDefs.Add(edef);
 				}
 			}
 		}
 
-		public class EnumDef
+		public void AddClassFiles(string[] pathes)
 		{
-			public string Name = string.Empty;
-			public string Brief = string.Empty;
-			public List<EnumMemberDef> Members = new List<EnumMemberDef>();
+			foreach(var path in pathes)
+			{
+				var classDef = new ClassDef();
+				var doc = XDocument.Load(path);
+				var compounddef = doc.Element("doxygen").Element("compounddef");
+				classDef.Name = compounddef.Element("compoundname").Value.Replace("ace::", "");
+
+				var briefNode = compounddef.Element("briefdescription").Element("para");
+				if(briefNode != null)
+				{
+					classDef.Brief = briefNode.Value;
+				}
+
+				var functions = compounddef.Elements("sectiondef")
+					.Where(x => x.Attribute("kind") != null
+						&& (x.Attribute("kind").Value == "protected-func" || x.Attribute("kind").Value == "public-func"))
+					.SelectMany(x => x.Elements("memberdef"));
+
+				foreach(var funcNode in functions)
+				{
+					classDef.Methods.Add(BuildMethod(funcNode));
+				}
+
+				ClassDefs.Add(classDef);
+			}
 		}
 
-		public class EnumMemberDef
+		private MethodDef BuildMethod(XElement funcNode)
 		{
-			public string Name = string.Empty;
-			public string Brief = string.Empty;
+			var methodDef = new MethodDef();
+			methodDef.Name = funcNode.Element("name").Value;
+
+			var briefNode = funcNode.Element("briefdescription").Element("para");
+			if(briefNode != null)
+			{
+				methodDef.Brief = briefNode.Value;
+			}
+
+			var para = funcNode.Element("detaileddescription").Element("para");
+			if(para != null)
+			{
+				var simplesect = para.Element("simplesect");
+				if(simplesect != null && simplesect.Attribute("kind").Value == "return")
+				{
+					methodDef.BriefOfReturn = simplesect.Element("para").Value;
+				}
+
+				var parameterlist = para.Element("parameterlist");
+				if(parameterlist != null && parameterlist.Attribute("kind").Value == "param")
+				{
+					foreach(var parameterNode in parameterlist.Elements("parameteritem"))
+					{
+						methodDef.Parameters.Add(BuildParameter(parameterNode));
+					}
+				}
+			}
+
+			return methodDef;
+		}
+
+		private ParameterDef BuildParameter(XElement parameterNode)
+		{
+			var def = new ParameterDef();
+			def.Name = parameterNode.Element("parameternamelist").Element("parametername").Value;
+			def.Brief = parameterNode.Element("parameterdescription").Element("para").Value;
+			return def;
 		}
 	}
 }

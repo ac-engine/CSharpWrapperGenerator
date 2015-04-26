@@ -3,15 +3,17 @@
 <#@ import namespace="System.Linq" #>
 <#@ import namespace="System.Text" #>
 <#@ import namespace="System.Collections.Generic" #>
-using System;
-
-namespace ace
-{
+	/// <summary>
+	/// <#=classDef.Brief #>
+	/// </summary>
 	public partial class <#=className #>
 	{
 		private ace.swig.<#=classDef.Name #> coreInstance;
 
-<#	foreach(var property in properties){ #>
+<#	foreach(var property in classDef.Properties){ #>
+		/// <summary>
+		/// <#=property.Brief #>
+		/// </summary>
 		public <#=property.Type #> <#=property.Name #>
 		{
 <#		if(property.HaveGetter){ #>
@@ -26,6 +28,15 @@ namespace ace
 
 <#	foreach(var method in classDef.Methods){ #>
 <#		var parameterList = string.Join(", ", method.Parameters.Select(x => x.Type + " " + x.Name)); #>
+		/// <summary>
+		/// <#=method.Brief #>
+		/// </summary>
+<#		foreach(var p in method.Parameters){ #>
+		/// <param name="<#=p.Name #>"><#=p.Brief #></param>
+<#		} #>
+<#		if(method.ReturnType != "void"){ #>
+		/// <returns><#=method.BriefOfReturn #></returns>
+<#		} #>
 		public <#=method.ReturnType #> <#=method.Name #>(<#= parameterList#>)
 		{
 <#		var sendedParameterList = string.Join(", ", method.Parameters.Select(x => x.Name));#>
@@ -34,4 +45,3 @@ namespace ace
 
 <#	} #>
 	}
-}

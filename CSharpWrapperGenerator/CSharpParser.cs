@@ -138,50 +138,5 @@ namespace CSharpWrapperGenerator
 
 			Enumdefs.Add(enumDef);
 		}
-
-		public class EnumDef
-		{
-			public string Name = string.Empty;
-			public List<EnumMemberDef> Members = new List<EnumMemberDef>();
-		}
-
-		public class EnumMemberDef
-		{
-			public string Name = string.Empty;
-		}
-
-		public class ClassDef
-		{
-			public string Name = string.Empty;
-			public List<MethodDef> Methods = new List<MethodDef>();
-
-			public override string ToString()
-			{
-				return string.Format("ClassDef {0}, Method x{1}", Name, Methods.Count);
-			}
-		}
-
-		public class MethodDef
-		{
-			public string ReturnType = string.Empty;
-			public string Name = string.Empty;
-			public List<ParameterDef> Parameters = new List<ParameterDef>();
-
-			public override string ToString()
-			{
-				return string.Format("MethodDef {0}, Parameters x{1}", Name, Parameters.Count);
-			}
-		}
-
-		public class ParameterDef
-		{
-			public string Type = string.Empty;
-			public string Name = string.Empty;
-
-			public override string ToString()
-			{
-				return string.Format("ParameterDef {0} {1}", Type, Name);
-			}
-		}
 	}
 }

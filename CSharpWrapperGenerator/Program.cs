@@ -16,13 +16,15 @@ namespace CSharpWrapperGenerator
 
 			var doxygenParser = new DoxygenParser();
 			doxygenParser.AddNamespaceFile(doxygenDirPath + "namespaceace.xml");
+			var docs = System.IO.Directory.EnumerateFiles(doxygenDirPath, "classace_*.xml", System.IO.SearchOption.TopDirectoryOnly).ToArray();
+			doxygenParser.AddClassFiles(docs);
 
 			var csharpParser = new CSharpParser();
 			var cs = System.IO.Directory.EnumerateFiles(swigCSharpDirPath, "*.cs", System.IO.SearchOption.AllDirectories).ToArray();
 			csharpParser.Parse(cs);
 
 			var exporter = new Exporter();
-			exporter.Export("Gen/", doxygenParser, csharpParser);
+			exporter.Export("Wrappers.cs", doxygenParser, csharpParser);
 		}
 	}
 

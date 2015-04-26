@@ -7,64 +7,82 @@ using System.Threading.Tasks;
 
 namespace CSharpWrapperGenerator
 {
-	class PropertyDef
-	{
-		public string Type = string.Empty;
-		public string Name = string.Empty;
-		public bool HaveGetter = false;
-		public bool HaveSetter = false;
-	}
-
 	class Exporter
 	{
-		public void Export(string directory, DoxygenParser doxygen, CSharpParser csharp)
+		public void Export(string path, DoxygenParser doxygen, CSharpParser csharp)
 		{
+			List<string> codes = new List<string>();
+
+			codes.Add("using System;");
+			codes.Add("namespace ace {");
+
+			foreach(var e in doxygen.EnumDefs.Join(csharp.Enumdefs, x => x.Name, x => x.Name, (o, i) => o))
+			{
+				codes.Add(BuildEnum(e));
+			}
+
+			AddClasses(codes, doxygen, csharp);
+
+			codes.Add("}");
+
+			File.WriteAllLines(path, codes.ToArray());
+		}
+
+		private void AddClasses(List<string> codes, DoxygenParser doxygen, CSharpParser csharp)
+		{
+			List<ClassDef> classes = csharp.ClassDefs.ToList();
 			Dictionary<string, string> coreNameToEngineName = new Dictionary<string, string>();
-
-			Action<string, string> save = (name, contents) =>
-			{
-				var path = Path.Combine(directory, name + "_Gen.cs");
-				File.WriteAllText(path, contents);
-			};
-
-			if(!Directory.Exists(directory))
-			{
-				Directory.CreateDirectory(directory);
-			}
-
-			foreach(var e in doxygen.Enumdefs.Join(csharp.Enumdefs, x => x.Name, x => x.Name, (o, i) => o))
-			{
-				save(e.Name, BuildEnum(e));
-			}
 
 			var classException = new string[]
 			{
 				"Core", "Core_Imp", "ace_core", "ace_corePINVOKE"
 			};
-			csharp.ClassDefs.RemoveAll(x => classException.Contains(x.Name));
+			classes.RemoveAll(x => classException.Contains(x.Name));
 
-			var beRemoved = new List<CSharpParser.ClassDef>();
-			foreach(var item in csharp.ClassDefs.Where(x => x.Name.EndsWith("_Imp")))
+			var beRemoved = new List<string>();
+			foreach(var item in classes.Where(x => x.Name.EndsWith("_Imp")))
 			{
 				var newName = item.Name.Replace("_Imp", "");
-				beRemoved.Add(csharp.ClassDefs.Find(x => x.Name == newName));
+				beRemoved.Add(newName);
 				coreNameToEngineName[item.Name] = newName;
 			}
-			beRemoved.ForEach(x => csharp.ClassDefs.Remove(x));
+			classes.RemoveAll(x => beRemoved.Contains(x.Name));
 
-			foreach(var item in csharp.ClassDefs.Where(x => x.Name.StartsWith("Core")))
+			foreach(var item in classes.Where(x => x.Name.StartsWith("Core")))
 			{
 				coreNameToEngineName[item.Name] = item.Name.Replace("Core", "");
 			}
 
-			foreach(var c in csharp.ClassDefs)
+			classes = doxygen.ClassDefs.Join(
+				classes,
+				x => x.Name,
+				x => coreNameToEngineName.ContainsKey(x.Name) ? coreNameToEngineName[x.Name] : x.Name,
+				(o, i) => new ClassDef
 			{
-				var name = coreNameToEngineName.ContainsKey(c.Name) ? coreNameToEngineName[c.Name] : c.Name;
-				save(name, BuildClass(c, coreNameToEngineName));
+				Name = i.Name,
+				Brief = o.Brief,
+				Methods = o.Methods.Join(i.Methods, y => y.Name, y => y.Name, (o2, i2) => new MethodDef
+				{
+					Name = o2.Name,
+					Brief = o2.Brief,
+					BriefOfReturn = o2.BriefOfReturn,
+					ReturnType = i2.ReturnType,
+					Parameters = i2.Parameters.Select(z => new ParameterDef
+					{
+						Name = z.Name,
+						Type = z.Type,
+						Brief = o2.Parameters.Any(_4 => _4.Name == z.Name) ? o2.Parameters.First(_4 => _4.Name == z.Name).Brief : "",
+					}).ToList(),
+				}).ToList(),
+			}).ToList();
+
+			foreach(var c in classes)
+			{
+				codes.Add(BuildClass(c, coreNameToEngineName));
 			}
 		}
 
-		private string BuildClass(CSharpParser.ClassDef c, Dictionary<string, string> coreNameToEngineName)
+		private string BuildClass(ClassDef c, Dictionary<string, string> coreNameToEngineName)
 		{
 			var methodException = new string[]
 			{
@@ -88,22 +106,25 @@ namespace CSharpWrapperGenerator
 				}
 			}
 
-			Dictionary<string, PropertyDef> properties = BuildProperties(c);
+			SetProperties(c);
 
 			var name = coreNameToEngineName.ContainsKey(c.Name) ? coreNameToEngineName[c.Name] : c.Name;
-			var template = new Templates.ClassGen(name, c, properties.Values);
+			var template = new Templates.ClassGen(name, c);
 			return template.TransformText();
 		}
 
-		private static Dictionary<string, PropertyDef> BuildProperties(CSharpParser.ClassDef c)
+		private static void SetProperties(ClassDef c)
 		{
 			var properties = new Dictionary<string, PropertyDef>();
 
 			var getters = c.Methods.Where(x => x.Name.StartsWith("Get"))
+				.Where(x => x.Parameters.Count == 0)
+				.Where(x => x.ReturnType != "void")
 				.ToArray();
 
 			var setters = c.Methods.Where(x => x.Name.StartsWith("Set"))
 				.Where(x => x.Parameters.Count == 1)
+				.Where(x => x.ReturnType == "void")
 				.ToArray();
 
 			c.Methods.RemoveAll(getters.Contains);
@@ -111,13 +132,14 @@ namespace CSharpWrapperGenerator
 
 			foreach(var item in getters)
 			{
-				var type = item.ReturnType;
 				var name = item.Name.Replace("Get", "");
+				var start取得する = item.Brief.IndexOf("を取得する");
 				properties[name] = new PropertyDef
 				{
-					Type = type,
+					Type = item.ReturnType,
 					Name = name,
 					HaveGetter = true,
+					Brief = start取得する != -1 ? item.Brief.Remove(start取得する) : "",
 				};
 			}
 
@@ -136,12 +158,42 @@ namespace CSharpWrapperGenerator
 						throw new Exception("Getter/Setterの不一致");
 					}
 				}
+				else
+				{
+					var start設定する = item.Brief.IndexOf("を設定する");
+					properties[name] = new PropertyDef
+					{
+						Type = type,
+						Name = name,
+						HaveSetter = true,
+						Brief = start設定する != -1 ? item.Brief.Remove(start設定する) : "",
+					};
+				}
 			}
 
-			return properties;
+			foreach(var property in properties.Values)
+			{
+				if(property.Brief == string.Empty)
+				{
+					continue;
+				}
+
+				var verbs = new List<string>();
+				if(property.HaveGetter)
+				{
+					verbs.Add("取得");
+				}
+				if(property.HaveSetter)
+				{
+					verbs.Add("設定");
+				}
+				property.Brief += "を" + string.Join("または", verbs) + "する。";
+			}
+
+			c.Properties = new List<PropertyDef>(properties.Values);
 		}
 
-		private string BuildEnum(DoxygenParser.EnumDef enumDef)
+		private string BuildEnum(EnumDef enumDef)
 		{
 			var template = new Templates.EnumGen(enumDef);
 			return template.TransformText();
@@ -150,14 +202,14 @@ namespace CSharpWrapperGenerator
 		void ExportEnum(List<string> sb, DoxygenParser doxygen, CSharpParser csharp)
 		{
 			// Csharpのswigに存在しているenumのみ出力
-			foreach (var e in doxygen.Enumdefs.Where( _=> csharp.Enumdefs.Any(__=> __.Name ==_.Name)))
+			foreach(var e in doxygen.EnumDefs.Where(_ => csharp.Enumdefs.Any(__ => __.Name == _.Name)))
 			{
 				sb.Add(@"/// <summary>");
 				sb.Add(string.Format(@"/// {0}", e.Brief));
 				sb.Add(@"/// </summary>");
 				sb.Add(@"public enum " + e.Name + " : int {");
 
-				foreach (var em in e.Members)
+				foreach(var em in e.Members)
 				{
 					sb.Add(@"/// <summary>");
 					sb.Add(string.Format(@"/// {0}", em.Brief));

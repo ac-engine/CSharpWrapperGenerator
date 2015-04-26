@@ -8,9 +8,9 @@ namespace CSharpWrapperGenerator.Templates
 {
 	partial class EnumGen
 	{
-		private readonly DoxygenParser.EnumDef enumDef;
+		private readonly EnumDef enumDef;
 
-		internal EnumGen(DoxygenParser.EnumDef enumDef)
+		internal EnumGen(EnumDef enumDef)
 		{
 			this.enumDef = enumDef;
 		}

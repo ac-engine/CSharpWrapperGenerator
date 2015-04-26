@@ -99,6 +99,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="CSharpParser.cs" />
+    <Compile Include="Definitions.cs" />
     <Compile Include="DoxygenParser.cs" />
     <Compile Include="Exporter.cs" />
     <Compile Include="Program.cs" />

@@ -53,33 +53,48 @@ namespace CSharpWrapperGenerator
 				coreNameToEngineName[item.Name] = item.Name.Replace("Core", "");
 			}
 
-			classes = doxygen.ClassDefs.Join(
-				classes,
-				x => x.Name,
-				x => coreNameToEngineName.ContainsKey(x.Name) ? coreNameToEngineName[x.Name] : x.Name,
-				(o, i) => new ClassDef
-			{
-				Name = i.Name,
-				Brief = o.Brief,
-				Methods = o.Methods.Join(i.Methods, y => y.Name, y => y.Name, (o2, i2) => new MethodDef
-				{
-					Name = o2.Name,
-					Brief = o2.Brief,
-					BriefOfReturn = o2.BriefOfReturn,
-					ReturnType = i2.ReturnType,
-					Parameters = i2.Parameters.Select(z => new ParameterDef
-					{
-						Name = z.Name,
-						Type = z.Type,
-						Brief = o2.Parameters.Any(_4 => _4.Name == z.Name) ? o2.Parameters.First(_4 => _4.Name == z.Name).Brief : "",
-					}).ToList(),
-				}).ToList(),
-			}).ToList();
+			classes = classes.Select(_1 => JoinClass(_1, doxygen, coreNameToEngineName)).ToList();
 
 			foreach(var c in classes)
 			{
 				codes.Add(BuildClass(c, coreNameToEngineName));
 			}
+		}
+
+		private static ClassDef JoinClass(ClassDef scClass, DoxygenParser doxygen, Dictionary<string, string> coreNameToEngineName)
+		{
+			var name = coreNameToEngineName.ContainsKey(scClass.Name) ? coreNameToEngineName[scClass.Name] : scClass.Name;
+			var doxygenClass = doxygen.ClassDefs.FirstOrDefault(_2 => _2.Name == name);
+			return new ClassDef
+			{
+				Name = scClass.Name,
+				Brief = doxygenClass != null ? doxygenClass.Brief : "",
+				Methods = scClass.Methods.Select(_2 => JoinMethod(_2, doxygenClass)).ToList(),
+			};
+		}
+
+		private static MethodDef JoinMethod(MethodDef csMethod, ClassDef doxygenClass)
+		{
+			var doxygenMethod = doxygenClass != null ? doxygenClass.Methods.FirstOrDefault(_3 => _3.Name == csMethod.Name) : null;
+			return new MethodDef
+			{
+				Name = csMethod.Name,
+				ReturnType = csMethod.ReturnType,
+				Brief = doxygenMethod != null ? doxygenMethod.Brief : "",
+				BriefOfReturn = doxygenMethod != null ? doxygenMethod.BriefOfReturn : "",
+				Parameters = csMethod.Parameters.Select(_3 => JoinParameter(_3, doxygenMethod)).ToList(),
+			};
+		}
+
+		private static ParameterDef JoinParameter(ParameterDef csParameter, MethodDef doxygenMethod)
+		{
+			var doxygenParameter = doxygenMethod != null ? doxygenMethod.Parameters.FirstOrDefault(_4 => _4.Name == csParameter.Name) : null;
+			return new ParameterDef
+			{
+				Name = csParameter.Name,
+				Type = csParameter.Type,
+				Brief = doxygenParameter != null ? doxygenParameter.Brief : "",
+			};
 		}
 
 		private string BuildClass(ClassDef c, Dictionary<string, string> coreNameToEngineName)

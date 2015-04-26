@@ -9,35 +9,42 @@ namespace CSharpWrapperGenerator
 {
 	class Exporter
 	{
-		public void Export(string path, DoxygenParser doxygen, CSharpParser csharp)
+		private Settings settings;
+		private ParseResult doxygen;
+		private ParseResult swig;
+
+		public Exporter(Settings settings, ParseResult doxygen, ParseResult swig)
+		{
+			this.settings = settings;
+			this.doxygen = doxygen;
+			this.swig = swig;
+		}
+
+		public void Export()
 		{
 			List<string> codes = new List<string>();
 
 			codes.Add("using System;");
 			codes.Add("namespace ace {");
 
-			foreach(var e in doxygen.EnumDefs.Join(csharp.Enumdefs, x => x.Name, x => x.Name, (o, i) => o))
+			foreach(var e in doxygen.EnumDefs.Join(swig.EnumDefs, x => x.Name, x => x.Name, (o, i) => o))
 			{
 				codes.Add(BuildEnum(e));
 			}
 
-			AddClasses(codes, doxygen, csharp);
+			AddClasses(codes);
 
 			codes.Add("}");
 
-			File.WriteAllLines(path, codes.ToArray());
+			File.WriteAllLines(settings.ExportFilePath, codes.ToArray());
 		}
 
-		private void AddClasses(List<string> codes, DoxygenParser doxygen, CSharpParser csharp)
+		private void AddClasses(List<string> codes)
 		{
-			List<ClassDef> classes = csharp.ClassDefs.ToList();
+			List<ClassDef> classes = swig.ClassDefs.ToList();
 			Dictionary<string, string> coreNameToEngineName = new Dictionary<string, string>();
 
-			var classException = new string[]
-			{
-				"Core", "Core_Imp", "ace_core", "ace_corePINVOKE"
-			};
-			classes.RemoveAll(x => classException.Contains(x.Name));
+			classes.RemoveAll(x => settings.ClassBlackList.Contains(x.Name));
 
 			var beRemoved = new List<string>();
 			foreach(var item in classes.Where(x => x.Name.EndsWith("_Imp")))
@@ -53,7 +60,25 @@ namespace CSharpWrapperGenerator
 				coreNameToEngineName[item.Name] = item.Name.Replace("Core", "");
 			}
 
-			classes = classes.Select(_1 => JoinClass(_1, doxygen, coreNameToEngineName)).ToList();
+			foreach(var c in classes)
+			{
+				var name = coreNameToEngineName.ContainsKey(c.Name) ? coreNameToEngineName[c.Name] : c.Name;
+				var doxygenClass = doxygen.ClassDefs.FirstOrDefault(_2 => _2.Name == name);
+				c.Brief = doxygenClass != null ? doxygenClass.Brief : "";
+
+				foreach(var method in c.Methods)
+				{
+					var doxygenMethod = doxygenClass != null ? doxygenClass.Methods.FirstOrDefault(_3 => _3.Name == method.Name) : null;
+					method.Brief = doxygenMethod != null ? doxygenMethod.Brief : "";
+					method.BriefOfReturn = doxygenMethod != null ? doxygenMethod.BriefOfReturn : "";
+
+					foreach(var parameter in method.Parameters)
+					{
+						var doxygenParameter = doxygenMethod != null ? doxygenMethod.Parameters.FirstOrDefault(_4 => _4.Name == parameter.Name) : null;
+						parameter.Brief = doxygenParameter != null ? doxygenParameter.Brief : "";
+                    }
+				}
+            }
 
 			foreach(var c in classes)
 			{
@@ -61,50 +86,34 @@ namespace CSharpWrapperGenerator
 			}
 		}
 
-		private static ClassDef JoinClass(ClassDef scClass, DoxygenParser doxygen, Dictionary<string, string> coreNameToEngineName)
-		{
-			var name = coreNameToEngineName.ContainsKey(scClass.Name) ? coreNameToEngineName[scClass.Name] : scClass.Name;
-			var doxygenClass = doxygen.ClassDefs.FirstOrDefault(_2 => _2.Name == name);
-			return new ClassDef
-			{
-				Name = scClass.Name,
-				Brief = doxygenClass != null ? doxygenClass.Brief : "",
-				Methods = scClass.Methods.Select(_2 => JoinMethod(_2, doxygenClass)).ToList(),
-			};
-		}
-
-		private static MethodDef JoinMethod(MethodDef csMethod, ClassDef doxygenClass)
-		{
-			var doxygenMethod = doxygenClass != null ? doxygenClass.Methods.FirstOrDefault(_3 => _3.Name == csMethod.Name) : null;
-			return new MethodDef
-			{
-				Name = csMethod.Name,
-				ReturnType = csMethod.ReturnType,
-				Brief = doxygenMethod != null ? doxygenMethod.Brief : "",
-				BriefOfReturn = doxygenMethod != null ? doxygenMethod.BriefOfReturn : "",
-				Parameters = csMethod.Parameters.Select(_3 => JoinParameter(_3, doxygenMethod)).ToList(),
-			};
-		}
-
-		private static ParameterDef JoinParameter(ParameterDef csParameter, MethodDef doxygenMethod)
-		{
-			var doxygenParameter = doxygenMethod != null ? doxygenMethod.Parameters.FirstOrDefault(_4 => _4.Name == csParameter.Name) : null;
-			return new ParameterDef
-			{
-				Name = csParameter.Name,
-				Type = csParameter.Type,
-				Brief = doxygenParameter != null ? doxygenParameter.Brief : "",
-			};
-		}
-
 		private string BuildClass(ClassDef c, Dictionary<string, string> coreNameToEngineName)
 		{
-			var methodException = new string[]
+			c.Methods.RemoveAll(method => settings.MethodBlackList.Any(x =>
 			{
-				"GetPtr", "getCPtr", "Dispose", "Create"
-			};
+				var patterns = x.Split('.');
+				if(patterns[0] != "*" && patterns[0] != c.Name)
+				{
+					return false;
+				}
+				if(patterns[1] != method.Name)
+				{
+					return false;
+				}
+				return true;
+			}));
 
-			c.Methods.RemoveAll(x => methodException.Contains(x.Name));
+			c.Methods.RemoveAll(method => swig.ClassDefs.Any(x =>
+			{
+				if(method.ReturnType == x.Name)
+				{
+					return true;
+				}
+				if(method.Parameters.Any(p => p.Type == x.Name))
+				{
+					return true;
+				}
+				return false;
+			}));
 
 			foreach(var method in c.Methods)
 			{
@@ -112,12 +121,14 @@ namespace CSharpWrapperGenerator
 				{
 					method.ReturnType = coreNameToEngineName[method.ReturnType];
 				}
+				method.ReturnIsEnum = swig.EnumDefs.Any(x => x.Name == method.ReturnType);
 				foreach(var parameter in method.Parameters)
 				{
 					if(coreNameToEngineName.ContainsKey(parameter.Type))
 					{
 						parameter.Type = coreNameToEngineName[parameter.Type];
 					}
+					parameter.IsEnum = swig.EnumDefs.Any(x => x.Name == parameter.Type);
 				}
 			}
 
@@ -155,6 +166,7 @@ namespace CSharpWrapperGenerator
 					Name = name,
 					HaveGetter = true,
 					Brief = start取得する != -1 ? item.Brief.Remove(start取得する) : "",
+					IsEnum = item.ReturnIsEnum,
 				};
 			}
 
@@ -182,8 +194,10 @@ namespace CSharpWrapperGenerator
 						Name = name,
 						HaveSetter = true,
 						Brief = start設定する != -1 ? item.Brief.Remove(start設定する) : "",
+						IsEnum = item.Parameters[0].IsEnum,
 					};
 				}
+				properties[name].IsRefForSet = item.Parameters[0].IsRef;
 			}
 
 			foreach(var property in properties.Values)

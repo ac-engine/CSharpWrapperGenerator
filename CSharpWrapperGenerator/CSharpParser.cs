@@ -15,6 +15,18 @@ namespace CSharpWrapperGenerator
 		public List<EnumDef> Enumdefs = new List<EnumDef>();
 		public List<ClassDef> ClassDefs = new List<ClassDef>();
 
+		public ParseResult Result
+		{
+			get
+			{
+				return new ParseResult
+				{
+					EnumDefs = Enumdefs,
+					ClassDefs = ClassDefs,
+				};
+			}
+		}
+
 		public void Parse(string[] pathes)
 		{
 			List<SyntaxTree> syntaxTrees = new List<SyntaxTree>();
@@ -105,12 +117,14 @@ namespace CSharpWrapperGenerator
 			var methodDef = new MethodDef();
 			methodDef.Name = methodSyntax.Identifier.ValueText;
 			methodDef.ReturnType = methodSyntax.ReturnType.GetText().ToString().Trim();
+			methodDef.IsStatic = methodSyntax.Modifiers.Any(x => x.ValueText == "static");
 
 			foreach(var parameter in methodSyntax.ParameterList.Parameters)
 			{
 				var parameterDef = new ParameterDef();
 				parameterDef.Name = parameter.Identifier.ValueText;
 				parameterDef.Type = parameter.Type.GetText().ToString().Trim();
+				parameterDef.IsRef = parameter.Modifiers.Any(x => x.ValueText == "ref");
 
 				methodDef.Parameters.Add(parameterDef);
 			}

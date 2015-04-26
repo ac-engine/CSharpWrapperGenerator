@@ -34,10 +34,12 @@ namespace CSharpWrapperGenerator
 
 	class MethodDef
 	{
-		public string ReturnType = string.Empty;
+		public bool IsStatic = false;
 		public string Name = string.Empty;
 		public string Brief = string.Empty;
+		public string ReturnType = string.Empty;
 		public string BriefOfReturn = string.Empty;
+		public bool ReturnIsEnum = false;
 		public List<ParameterDef> Parameters = new List<ParameterDef>();
 
 		public override string ToString()
@@ -51,6 +53,8 @@ namespace CSharpWrapperGenerator
 		public string Type = string.Empty;
 		public string Name = string.Empty;
 		public string Brief = string.Empty;
+		public bool IsRef = false;
+		public bool IsEnum = false;
 
 		public override string ToString()
 		{
@@ -65,5 +69,7 @@ namespace CSharpWrapperGenerator
 		public bool HaveGetter = false;
 		public bool HaveSetter = false;
 		public string Brief = string.Empty;
+		public bool IsRefForSet = false;
+		public bool IsEnum = false;
 	}
 }

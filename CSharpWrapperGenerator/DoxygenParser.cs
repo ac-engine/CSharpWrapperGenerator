@@ -16,6 +16,18 @@ namespace CSharpWrapperGenerator
 		public List<EnumDef> EnumDefs = new List<EnumDef>();
 		public List<ClassDef> ClassDefs = new List<ClassDef>();
 
+		public ParseResult Result
+		{
+			get
+			{
+				return new ParseResult
+				{
+					EnumDefs = EnumDefs,
+					ClassDefs = ClassDefs,
+				};
+			}
+		}
+
 		public void AddNamespaceFile(string path)
 		{
 			var doc = System.Xml.Linq.XDocument.Load(path);

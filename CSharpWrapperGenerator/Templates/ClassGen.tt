@@ -17,10 +17,12 @@
 		public <#=property.Type #> <#=property.Name #>
 		{
 <#		if(property.HaveGetter){ #>
-			get { return coreInstance.Get<#=property.Name #>(); }
+			get { return <#if(property.IsEnum){ #>(ace.<#=property.Type #>)<#} #>coreInstance.Get<#=property.Name #>(); }
 <#		} #>
 <#		if(property.HaveSetter){ #>
-			set { coreInstance.Set<#=property.Name #>(value); }
+			set { coreInstance.Set<#=property.Name #>(<#if(property.IsRefForSet){ #>ref <#} #>
+<#if(property.IsEnum){ #>(ace.swig.<#=property.Type #>)<#} #>
+value); }
 <#		} #>
 		}
 
@@ -37,11 +39,31 @@
 <#		if(method.ReturnType != "void"){ #>
 		/// <returns><#=method.BriefOfReturn #></returns>
 <#		} #>
-		public <#=method.ReturnType #> <#=method.Name #>(<#= parameterList#>)
+		public <#if(method.IsStatic){ #>static <#} #><#=method.ReturnType #> <#=method.Name #>(<#= parameterList#>)
 		{
-<#		var sendedParameterList = string.Join(", ", method.Parameters.Select(x => x.Name));#>
-			<#if(method.ReturnType != "void"){ #>return <#} #>coreInstance.<#=method.Name #>(<#=sendedParameterList #>);
+<#		var sendedParameterList = string.Join(", ", method.Parameters.Select(GetParameterUsage));#>
+			<#if(method.ReturnType != "void"){ #>return <#} #>
+<#		if(method.ReturnIsEnum){ #>(ace.<#=method.ReturnType #>)<#		} #>
+<#		if(method.IsStatic){ #><#=classDef.Name #><#}else{ #>coreInstance<#} #>
+.<#=method.Name #>(<#=sendedParameterList #>);
 		}
 
 <#	} #>
 	}
+
+<#+
+	private string GetParameterUsage(ParameterDef parameter)
+	{
+		string result = "";
+		if(parameter.IsRef)
+		{
+			result += "ref ";
+		}
+		if(parameter.IsEnum)
+		{
+			result += "(ace.swig." + parameter.Type + ")";
+		}
+		result += parameter.Name;
+		return result;
+	}
+ #>

@@ -29,13 +29,32 @@ namespace CSharpWrapperGenerator
 			var settingsDirectory = Path.GetDirectoryName(args[0]);
 
 			var doxygenParser = new DoxygenParser();
-			doxygenParser.AddNamespaceFile(Path.Combine(settingsDirectory, settings.DoxygenXmlDirPath, "namespaceace.xml"));
-			var docs = Directory.EnumerateFiles(Path.Combine(settingsDirectory, settings.DoxygenXmlDirPath), "classace_*.xml", SearchOption.TopDirectoryOnly).ToArray();
-			doxygenParser.AddClassFiles(docs);
+			try
+			{
+				doxygenParser.AddNamespaceFile(Path.Combine(settingsDirectory, settings.DoxygenXmlDirPath, "namespaceace.xml"));
+				var docs = Directory.EnumerateFiles(Path.Combine(settingsDirectory, settings.DoxygenXmlDirPath), "classace_*.xml", SearchOption.TopDirectoryOnly).ToArray();
+				doxygenParser.AddClassFiles(docs);
+			}
+			catch (DirectoryNotFoundException ex)
+			{
+				Console.WriteLine("Doxygenのディレクトリが見つかりませんでした。");
+				return;
+			}
+			catch(FileNotFoundException ex)
+			{
+				Console.WriteLine("Doxygenのxmlドキュメントが見つかりませんでした。");
+			}
 
 			var csharpParser = new CSharpParser();
-			var cs = Directory.EnumerateFiles(Path.Combine(settingsDirectory, settings.SwigCSharpDirPath), "*.cs", SearchOption.AllDirectories).ToArray();
-			csharpParser.Parse(cs);
+			try
+			{
+				var cs = Directory.EnumerateFiles(Path.Combine(settingsDirectory, settings.SwigCSharpDirPath), "*.cs", SearchOption.AllDirectories).ToArray();
+				csharpParser.Parse(cs);
+			}
+			catch (DirectoryNotFoundException ex)
+			{
+				Console.WriteLine("swigのディレクトリが見つかりませんでした。");
+			}
 
 			settings.ExportFilePath = Path.Combine(settingsDirectory, settings.ExportFilePath);
 			var exporter = new Exporter(settings, doxygenParser.Result, csharpParser.Result);

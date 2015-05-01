@@ -25,6 +25,7 @@ namespace CSharpWrapperGenerator
 		public string Brief = string.Empty;
 		public List<MethodDef> Methods = new List<MethodDef>();
 		public List<PropertyDef> Properties = new List<PropertyDef>();
+		public bool CoreIsPrivate { get; set; }
 
 		public override string ToString()
 		{
@@ -55,6 +56,7 @@ namespace CSharpWrapperGenerator
 		public string Brief = string.Empty;
 		public bool IsRef = false;
 		public bool IsEnum = false;
+		public bool IsWrappingObject = false;
 
 		public override string ToString()
 		{

@@ -8,7 +8,8 @@
 	/// </summary>
 	public partial class <#=className #>
 	{
-		private ace.swig.<#=classDef.Name #> coreInstance;
+		<#	if(classDef.CoreIsPrivate){ #>private<#	}else{ #>internal<#} #>
+ ace.swig.<#=classDef.Name #> CoreInstance { get; set; }
 
 <#	foreach(var property in classDef.Properties){ #>
 		/// <summary>
@@ -17,10 +18,10 @@
 		public <#=property.Type #> <#=property.Name #>
 		{
 <#		if(property.HaveGetter){ #>
-			get { return <#if(property.IsEnum){ #>(ace.<#=property.Type #>)<#} #>coreInstance.Get<#=property.Name #>(); }
+			get { return <#if(property.IsEnum){ #>(ace.<#=property.Type #>)<#} #>CoreInstance.Get<#=property.Name #>(); }
 <#		} #>
 <#		if(property.HaveSetter){ #>
-			set { coreInstance.Set<#=property.Name #>(<#if(property.IsRefForSet){ #>ref <#} #>
+			set { CoreInstance.Set<#=property.Name #>(<#if(property.IsRefForSet){ #>ref <#} #>
 <#if(property.IsEnum){ #>(ace.swig.<#=property.Type #>)<#} #>
 value); }
 <#		} #>
@@ -41,10 +42,13 @@ value); }
 <#		} #>
 		public <#if(method.IsStatic){ #>static <#} #><#=method.ReturnType #> <#=method.Name #>(<#= parameterList#>)
 		{
+<#		foreach(var wrapper in method.Parameters.Where(x => x.IsWrappingObject)){ #>
+			var <#=wrapper.Name #>Core = <#=wrapper.Name #> != null ? <#=wrapper.Name #>.CoreInstance : null;
+<#		} #>
 <#		var sendedParameterList = string.Join(", ", method.Parameters.Select(GetParameterUsage));#>
 			<#if(method.ReturnType != "void"){ #>return <#} #>
 <#		if(method.ReturnIsEnum){ #>(ace.<#=method.ReturnType #>)<#		} #>
-<#		if(method.IsStatic){ #><#=classDef.Name #><#}else{ #>coreInstance<#} #>
+<#		if(method.IsStatic){ #><#=classDef.Name #><#}else{ #>CoreInstance<#} #>
 .<#=method.Name #>(<#=sendedParameterList #>);
 		}
 
@@ -64,6 +68,10 @@ value); }
 			result += "(ace.swig." + parameter.Type + ")";
 		}
 		result += parameter.Name;
+		if(parameter.IsWrappingObject)
+		{
+			result += "Core";
+		}
 		return result;
 	}
  #>

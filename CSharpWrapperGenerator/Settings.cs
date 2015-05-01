@@ -20,5 +20,7 @@ namespace CSharpWrapperGenerator
 		public string[] ClassBlackList { get; set; }
 		[DataMember]
 		public string[] MethodBlackList { get; set; }
+		[DataMember]
+		public string[] ListOfClassWhoseCoreIsPrivate { get; set; }
 	}
 }

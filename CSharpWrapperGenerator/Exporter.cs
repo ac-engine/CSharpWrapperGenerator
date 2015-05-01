@@ -66,6 +66,11 @@ namespace CSharpWrapperGenerator
 				var doxygenClass = doxygen.ClassDefs.FirstOrDefault(_2 => _2.Name == name);
 				c.Brief = doxygenClass != null ? doxygenClass.Brief : "";
 
+				if(settings.ListOfClassWhoseCoreIsPrivate.Contains(c.Name))
+				{
+					c.CoreIsPrivate = true;
+				}
+
 				foreach(var method in c.Methods)
 				{
 					var doxygenMethod = doxygenClass != null ? doxygenClass.Methods.FirstOrDefault(_3 => _3.Name == method.Name) : null;
@@ -102,33 +107,23 @@ namespace CSharpWrapperGenerator
 				return true;
 			}));
 
-			c.Methods.RemoveAll(method => swig.ClassDefs.Any(x =>
-			{
-				if(method.ReturnType == x.Name)
-				{
-					return true;
-				}
-				if(method.Parameters.Any(p => p.Type == x.Name))
-				{
-					return true;
-				}
-				return false;
-			}));
+			c.Methods.RemoveAll(method => swig.ClassDefs.Any(x => method.ReturnType == x.Name));
 
 			foreach(var method in c.Methods)
 			{
+				method.ReturnIsEnum = swig.EnumDefs.Any(x => x.Name == method.ReturnType);
 				if(coreNameToEngineName.ContainsKey(method.ReturnType))
 				{
 					method.ReturnType = coreNameToEngineName[method.ReturnType];
 				}
-				method.ReturnIsEnum = swig.EnumDefs.Any(x => x.Name == method.ReturnType);
 				foreach(var parameter in method.Parameters)
 				{
+					parameter.IsEnum = swig.EnumDefs.Any(x => x.Name == parameter.Type);
+					parameter.IsWrappingObject = swig.ClassDefs.Any(x => x.Name == parameter.Type);
 					if(coreNameToEngineName.ContainsKey(parameter.Type))
 					{
 						parameter.Type = coreNameToEngineName[parameter.Type];
 					}
-					parameter.IsEnum = swig.EnumDefs.Any(x => x.Name == parameter.Type);
 				}
 			}
 
@@ -139,7 +134,7 @@ namespace CSharpWrapperGenerator
 			return template.TransformText();
 		}
 
-		private static void SetProperties(ClassDef c)
+		private void SetProperties(ClassDef c)
 		{
 			var properties = new Dictionary<string, PropertyDef>();
 
@@ -174,6 +169,11 @@ namespace CSharpWrapperGenerator
 			{
 				var name = item.Name.Replace("Set", "");
 				var type = item.Parameters[0].Type;
+				if(swig.ClassDefs.Any(x => x.Name == type))
+				{
+					break;
+				}
+
 				if(properties.ContainsKey(name))
 				{
 					if(properties[name].Type == type)

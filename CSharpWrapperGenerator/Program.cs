@@ -31,8 +31,10 @@ namespace CSharpWrapperGenerator
 			var doxygenParser = new DoxygenParser();
 			try
 			{
-				doxygenParser.AddNamespaceFile(Path.Combine(settingsDirectory, settings.DoxygenXmlDirPath, "namespaceace.xml"));
-				var docs = Directory.EnumerateFiles(Path.Combine(settingsDirectory, settings.DoxygenXmlDirPath), "classace_*.xml", SearchOption.TopDirectoryOnly).ToArray();
+				doxygenParser.AddNamespaceFile(Path.Combine(settingsDirectory, settings.DoxygenXmlDirPath, "namespaceasd.xml"));
+				var docs = Directory.EnumerateFiles(Path.Combine(settingsDirectory, settings.DoxygenXmlDirPath), "*.xml", SearchOption.TopDirectoryOnly).ToArray();
+				docs = docs.Where(_ => _.Contains("classasd_")).ToArray();
+
 				doxygenParser.AddClassFiles(docs);
 			}
 			catch (DirectoryNotFoundException ex)

@@ -25,7 +25,7 @@ namespace CSharpWrapperGenerator
 			List<string> codes = new List<string>();
 
 			codes.Add("using System;");
-			codes.Add("namespace ace {");
+			codes.Add("namespace asd {");
 
 			foreach(var e in doxygen.EnumDefs.Join(swig.EnumDefs, x => x.Name, x => x.Name, (o, i) => o))
 			{
@@ -243,7 +243,7 @@ namespace CSharpWrapperGenerator
 					sb.Add(@"/// <summary>");
 					sb.Add(string.Format(@"/// {0}", em.Brief));
 					sb.Add(@"/// </summary>");
-					sb.Add(string.Format(@"{0} = ace.swig.{1}.{2},", em.Name, e.Name, em.Name));
+					sb.Add(string.Format(@"{0} = asd.swig.{1}.{2},", em.Name, e.Name, em.Name));
 				}
 
 				sb.Add(@"}");

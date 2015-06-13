@@ -91,7 +91,7 @@ namespace CSharpWrapperGenerator
 				var classDef = new ClassDef();
 				var doc = XDocument.Load(path);
 				var compounddef = doc.Element("doxygen").Element("compounddef");
-				classDef.Name = compounddef.Element("compoundname").Value.Replace("ace::", "");
+				classDef.Name = compounddef.Element("compoundname").Value.Replace("asd::", "");
 
 				var briefNode = compounddef.Element("briefdescription").Element("para");
 				if(briefNode != null)

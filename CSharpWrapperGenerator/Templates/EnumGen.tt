@@ -12,6 +12,6 @@
 		/// <summary>
 		/// <#=member.Brief #>
 		/// </summary>
-		<#=member.Name #> = ace.swig.<#=enumDef.Name #>.<#=member.Name #>,
+		<#=member.Name #> = asd.swig.<#=enumDef.Name #>.<#=member.Name #>,
 <#	} #>
 	}

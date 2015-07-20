@@ -18,7 +18,7 @@ namespace CSharpWrapperGenerator.Templates
     /// Class to produce the template output
     /// </summary>
     
-    #line 1 "D:\Documents\Repos\AceRepos\CSharpWrapperGenerator\CSharpWrapperGenerator\Templates\EnumGen.tt"
+    #line 1 "D:\dev\_ACE\CSharpWrapperGenerator\CSharpWrapperGenerator\Templates\EnumGen.tt"
     [global::System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.VisualStudio.TextTemplating", "12.0.0.0")]
     public partial class EnumGen : EnumGenBase
     {
@@ -30,56 +30,56 @@ namespace CSharpWrapperGenerator.Templates
         {
             this.Write("\t/// <summary>\r\n\t/// ");
             
-            #line 7 "D:\Documents\Repos\AceRepos\CSharpWrapperGenerator\CSharpWrapperGenerator\Templates\EnumGen.tt"
+            #line 7 "D:\dev\_ACE\CSharpWrapperGenerator\CSharpWrapperGenerator\Templates\EnumGen.tt"
             this.Write(this.ToStringHelper.ToStringWithCulture(enumDef.Brief));
             
             #line default
             #line hidden
             this.Write("\r\n\t///\t</summary>\r\n\tpublic enum ");
             
-            #line 9 "D:\Documents\Repos\AceRepos\CSharpWrapperGenerator\CSharpWrapperGenerator\Templates\EnumGen.tt"
+            #line 9 "D:\dev\_ACE\CSharpWrapperGenerator\CSharpWrapperGenerator\Templates\EnumGen.tt"
             this.Write(this.ToStringHelper.ToStringWithCulture(enumDef.Name));
             
             #line default
             #line hidden
             this.Write(" : int\r\n\t{\r\n");
             
-            #line 11 "D:\Documents\Repos\AceRepos\CSharpWrapperGenerator\CSharpWrapperGenerator\Templates\EnumGen.tt"
+            #line 11 "D:\dev\_ACE\CSharpWrapperGenerator\CSharpWrapperGenerator\Templates\EnumGen.tt"
 	foreach(var member in enumDef.Members){ 
             
             #line default
             #line hidden
             this.Write("\t\t/// <summary>\r\n\t\t/// ");
             
-            #line 13 "D:\Documents\Repos\AceRepos\CSharpWrapperGenerator\CSharpWrapperGenerator\Templates\EnumGen.tt"
+            #line 13 "D:\dev\_ACE\CSharpWrapperGenerator\CSharpWrapperGenerator\Templates\EnumGen.tt"
             this.Write(this.ToStringHelper.ToStringWithCulture(member.Brief));
             
             #line default
             #line hidden
             this.Write("\r\n\t\t/// </summary>\r\n\t\t");
             
-            #line 15 "D:\Documents\Repos\AceRepos\CSharpWrapperGenerator\CSharpWrapperGenerator\Templates\EnumGen.tt"
+            #line 15 "D:\dev\_ACE\CSharpWrapperGenerator\CSharpWrapperGenerator\Templates\EnumGen.tt"
             this.Write(this.ToStringHelper.ToStringWithCulture(member.Name));
             
             #line default
             #line hidden
-            this.Write(" = ace.swig.");
+            this.Write(" = asd.swig.");
             
-            #line 15 "D:\Documents\Repos\AceRepos\CSharpWrapperGenerator\CSharpWrapperGenerator\Templates\EnumGen.tt"
+            #line 15 "D:\dev\_ACE\CSharpWrapperGenerator\CSharpWrapperGenerator\Templates\EnumGen.tt"
             this.Write(this.ToStringHelper.ToStringWithCulture(enumDef.Name));
             
             #line default
             #line hidden
             this.Write(".");
             
-            #line 15 "D:\Documents\Repos\AceRepos\CSharpWrapperGenerator\CSharpWrapperGenerator\Templates\EnumGen.tt"
+            #line 15 "D:\dev\_ACE\CSharpWrapperGenerator\CSharpWrapperGenerator\Templates\EnumGen.tt"
             this.Write(this.ToStringHelper.ToStringWithCulture(member.Name));
             
             #line default
             #line hidden
             this.Write(",\r\n");
             
-            #line 16 "D:\Documents\Repos\AceRepos\CSharpWrapperGenerator\CSharpWrapperGenerator\Templates\EnumGen.tt"
+            #line 16 "D:\dev\_ACE\CSharpWrapperGenerator\CSharpWrapperGenerator\Templates\EnumGen.tt"
 	} 
             
             #line default

@@ -14,7 +14,7 @@
 	public partial class <#=className #>
 	{
 		<#	if(classDef.CoreIsPrivate){ #>private<#	}else{ #>internal<#} #>
- ace.swig.<#=classDef.Name #> CoreInstance { get; set; }
+ asd.swig.<#=classDef.Name #> CoreInstance { get; set; }
 
 <#	foreach(var property in classDef.Properties){ #>
 		/// <summary>
@@ -23,11 +23,11 @@
 		public <#=property.Type #> <#=property.Name #>
 		{
 <#		if(property.HaveGetter){ #>
-			get { return <#if(property.IsEnum){ #>(ace.<#=property.Type #>)<#} #>CoreInstance.Get<#=property.Name #>(); }
+			get { return <#if(property.IsEnum){ #>(asd.<#=property.Type #>)<#} #>CoreInstance.Get<#=property.Name #>(); }
 <#		} #>
 <#		if(property.HaveSetter){ #>
 			set { CoreInstance.Set<#=property.Name #>(<#if(property.IsRefForSet){ #>ref <#} #>
-<#if(property.IsEnum){ #>(ace.swig.<#=property.Type #>)<#} #>
+<#if(property.IsEnum){ #>(asd.swig.<#=property.Type #>)<#} #>
 value); }
 <#		} #>
 		}
@@ -57,7 +57,7 @@ value); }
 <#		} #>
 <#		var sendedParameterList = string.Join(", ", method.Parameters.Select(GetParameterUsage));#>
 			<#if(method.ReturnType != "void"){ #>return <#} #>
-<#		if(method.ReturnIsEnum){ #>(ace.<#=method.ReturnType #>)<#		} #>
+<#		if(method.ReturnIsEnum){ #>(asd.<#=method.ReturnType #>)<#		} #>
 <#		if(method.IsStatic){ #><#=classDef.Name #><#}else{ #>CoreInstance<#} #>
 .<#=method.Name #>(<#=sendedParameterList #>);
 		}
@@ -75,7 +75,7 @@ value); }
 		}
 		if(parameter.IsEnum)
 		{
-			result += "(ace.swig." + parameter.Type + ")";
+			result += "(asd.swig." + parameter.Type + ")";
 		}
 		result += parameter.Name;
 		if(parameter.IsWrappingObject)

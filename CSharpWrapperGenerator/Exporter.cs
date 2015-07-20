@@ -179,7 +179,7 @@ namespace CSharpWrapperGenerator
 				var type = item.Parameters[0].Type;
 				if(swig.ClassDefs.Any(x => x.Name == type))
 				{
-					break;
+					continue;
 				}
 
 				if(properties.ContainsKey(name))

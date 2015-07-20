@@ -64,7 +64,11 @@ namespace CSharpWrapperGenerator
 			{
 				var name = coreNameToEngineName.ContainsKey(c.Name) ? coreNameToEngineName[c.Name] : c.Name;
 				var doxygenClass = doxygen.ClassDefs.FirstOrDefault(_2 => _2.Name == name);
-				c.Brief = doxygenClass != null ? doxygenClass.Brief : "";
+				if (doxygenClass != null)
+				{
+					c.Brief = doxygenClass.Brief;
+					c.Note = doxygenClass.Note;
+				}
 
 				if(settings.ListOfClassWhoseCoreIsPrivate.Contains(c.Name))
 				{
@@ -74,8 +78,12 @@ namespace CSharpWrapperGenerator
 				foreach(var method in c.Methods)
 				{
 					var doxygenMethod = doxygenClass != null ? doxygenClass.Methods.FirstOrDefault(_3 => _3.Name == method.Name) : null;
-					method.Brief = doxygenMethod != null ? doxygenMethod.Brief : "";
-					method.BriefOfReturn = doxygenMethod != null ? doxygenMethod.BriefOfReturn : "";
+					if (doxygenMethod != null)
+					{
+						method.Brief = doxygenMethod.Brief;
+						method.BriefOfReturn = doxygenMethod.BriefOfReturn;
+						method.Note = doxygenMethod.Note;
+					}
 
 					foreach(var parameter in method.Parameters)
 					{

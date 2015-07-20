@@ -23,6 +23,7 @@ namespace CSharpWrapperGenerator
 	{
 		public string Name = string.Empty;
 		public string Brief = string.Empty;
+		public string Note = null;
 		public List<MethodDef> Methods = new List<MethodDef>();
 		public List<PropertyDef> Properties = new List<PropertyDef>();
 		public bool CoreIsPrivate { get; set; }
@@ -41,6 +42,7 @@ namespace CSharpWrapperGenerator
 		public string ReturnType = string.Empty;
 		public string BriefOfReturn = string.Empty;
 		public bool ReturnIsEnum = false;
+		public string Note = null;
 		public List<ParameterDef> Parameters = new List<ParameterDef>();
 
 		public override string ToString()

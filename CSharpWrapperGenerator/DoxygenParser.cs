@@ -91,12 +91,22 @@ namespace CSharpWrapperGenerator
 				var classDef = new ClassDef();
 				var doc = XDocument.Load(path);
 				var compounddef = doc.Element("doxygen").Element("compounddef");
-				classDef.Name = compounddef.Element("compoundname").Value.Replace("ace::", "");
+				classDef.Name = compounddef.Element("compoundname").Value.Replace("asd::", "");
 
 				var briefNode = compounddef.Element("briefdescription").Element("para");
 				if(briefNode != null)
 				{
 					classDef.Brief = briefNode.Value;
+				}
+
+				var detailNode = compounddef.Element("detaileddescription").Element("para");
+				if(detailNode != null)
+				{
+					var simplesect = detailNode.Element("simplesect");
+					if(simplesect != null && simplesect.Attribute("kind").Value == "note")
+					{
+						classDef.Note = simplesect.Element("para").Value.Replace("<linebreak/>", "<br/>");
+					}
 				}
 
 				var functions = compounddef.Elements("sectiondef")
@@ -127,10 +137,17 @@ namespace CSharpWrapperGenerator
 			var para = funcNode.Element("detaileddescription").Element("para");
 			if(para != null)
 			{
-				var simplesect = para.Element("simplesect");
-				if(simplesect != null && simplesect.Attribute("kind").Value == "return")
+				var simplesect = para.Elements("simplesect");
+				foreach (var item in simplesect)
 				{
-					methodDef.BriefOfReturn = simplesect.Element("para").Value;
+					if (item.Attribute("kind").Value == "return")
+					{
+						methodDef.BriefOfReturn = item.Element("para").Value;
+					}
+					if (item.Attribute("kind").Value == "note")
+					{
+						methodDef.Note = item.Element("para").Value;
+					}
 				}
 
 				var parameterlist = para.Element("parameterlist");

@@ -6,6 +6,11 @@
 	/// <summary>
 	/// <#=classDef.Brief #>
 	/// </summary>
+<#	if(classDef.Note != null){ #>
+	/// <remarks>
+	/// <#=classDef.Note #>
+	/// </remarks>
+<#	} #>
 	public partial class <#=className #>
 	{
 		<#	if(classDef.CoreIsPrivate){ #>private<#	}else{ #>internal<#} #>
@@ -39,6 +44,11 @@ value); }
 <#		} #>
 <#		if(method.ReturnType != "void"){ #>
 		/// <returns><#=method.BriefOfReturn #></returns>
+<#		} #>
+<#		if(method.Note != null){ #>
+		/// <remarks>
+		/// <#=method.Note #>
+		/// </remarks>
 <#		} #>
 		public <#if(method.IsStatic){ #>static <#} #><#=method.ReturnType #> <#=method.Name #>(<#= parameterList#>)
 		{

@@ -35,303 +35,255 @@ namespace CSharpWrapperGenerator.Templates
             
             #line default
             #line hidden
-            this.Write("\r\n\t/// </summary>\r\n\tpublic partial class ");
+            this.Write("\r\n\t/// </summary>\r\n");
             
             #line 9 "D:\Documents\Repos\AceRepos\CSharpWrapperGenerator\CSharpWrapperGenerator\Templates\ClassGen.tt"
+	if(classDef.Note != null){ 
+            
+            #line default
+            #line hidden
+            this.Write("\t/// <remarks>\r\n\t/// ");
+            
+            #line 11 "D:\Documents\Repos\AceRepos\CSharpWrapperGenerator\CSharpWrapperGenerator\Templates\ClassGen.tt"
+            this.Write(this.ToStringHelper.ToStringWithCulture(classDef.Note));
+            
+            #line default
+            #line hidden
+            this.Write("\r\n\t/// </remarks>\r\n");
+            
+            #line 13 "D:\Documents\Repos\AceRepos\CSharpWrapperGenerator\CSharpWrapperGenerator\Templates\ClassGen.tt"
+	} 
+            
+            #line default
+            #line hidden
+            this.Write("\tpublic partial class ");
+            
+            #line 14 "D:\Documents\Repos\AceRepos\CSharpWrapperGenerator\CSharpWrapperGenerator\Templates\ClassGen.tt"
             this.Write(this.ToStringHelper.ToStringWithCulture(className));
             
             #line default
             #line hidden
             this.Write("\r\n\t{\r\n\t\t");
             
-            #line 11 "D:\Documents\Repos\AceRepos\CSharpWrapperGenerator\CSharpWrapperGenerator\Templates\ClassGen.tt"
+            #line 16 "D:\Documents\Repos\AceRepos\CSharpWrapperGenerator\CSharpWrapperGenerator\Templates\ClassGen.tt"
 	if(classDef.CoreIsPrivate){ 
             
             #line default
             #line hidden
             this.Write("private");
             
-            #line 11 "D:\Documents\Repos\AceRepos\CSharpWrapperGenerator\CSharpWrapperGenerator\Templates\ClassGen.tt"
+            #line 16 "D:\Documents\Repos\AceRepos\CSharpWrapperGenerator\CSharpWrapperGenerator\Templates\ClassGen.tt"
 	}else{ 
             
             #line default
             #line hidden
             this.Write("internal");
             
-            #line 11 "D:\Documents\Repos\AceRepos\CSharpWrapperGenerator\CSharpWrapperGenerator\Templates\ClassGen.tt"
+            #line 16 "D:\Documents\Repos\AceRepos\CSharpWrapperGenerator\CSharpWrapperGenerator\Templates\ClassGen.tt"
 } 
             
             #line default
             #line hidden
             this.Write(" ace.swig.");
             
-            #line 12 "D:\Documents\Repos\AceRepos\CSharpWrapperGenerator\CSharpWrapperGenerator\Templates\ClassGen.tt"
+            #line 17 "D:\Documents\Repos\AceRepos\CSharpWrapperGenerator\CSharpWrapperGenerator\Templates\ClassGen.tt"
             this.Write(this.ToStringHelper.ToStringWithCulture(classDef.Name));
             
             #line default
             #line hidden
             this.Write(" CoreInstance { get; set; }\r\n\r\n");
             
-            #line 14 "D:\Documents\Repos\AceRepos\CSharpWrapperGenerator\CSharpWrapperGenerator\Templates\ClassGen.tt"
+            #line 19 "D:\Documents\Repos\AceRepos\CSharpWrapperGenerator\CSharpWrapperGenerator\Templates\ClassGen.tt"
 	foreach(var property in classDef.Properties){ 
             
             #line default
             #line hidden
             this.Write("\t\t/// <summary>\r\n\t\t/// ");
             
-            #line 16 "D:\Documents\Repos\AceRepos\CSharpWrapperGenerator\CSharpWrapperGenerator\Templates\ClassGen.tt"
+            #line 21 "D:\Documents\Repos\AceRepos\CSharpWrapperGenerator\CSharpWrapperGenerator\Templates\ClassGen.tt"
             this.Write(this.ToStringHelper.ToStringWithCulture(property.Brief));
             
             #line default
             #line hidden
             this.Write("\r\n\t\t/// </summary>\r\n\t\tpublic ");
             
-            #line 18 "D:\Documents\Repos\AceRepos\CSharpWrapperGenerator\CSharpWrapperGenerator\Templates\ClassGen.tt"
+            #line 23 "D:\Documents\Repos\AceRepos\CSharpWrapperGenerator\CSharpWrapperGenerator\Templates\ClassGen.tt"
             this.Write(this.ToStringHelper.ToStringWithCulture(property.Type));
             
             #line default
             #line hidden
             this.Write(" ");
             
-            #line 18 "D:\Documents\Repos\AceRepos\CSharpWrapperGenerator\CSharpWrapperGenerator\Templates\ClassGen.tt"
+            #line 23 "D:\Documents\Repos\AceRepos\CSharpWrapperGenerator\CSharpWrapperGenerator\Templates\ClassGen.tt"
             this.Write(this.ToStringHelper.ToStringWithCulture(property.Name));
             
             #line default
             #line hidden
             this.Write("\r\n\t\t{\r\n");
             
-            #line 20 "D:\Documents\Repos\AceRepos\CSharpWrapperGenerator\CSharpWrapperGenerator\Templates\ClassGen.tt"
+            #line 25 "D:\Documents\Repos\AceRepos\CSharpWrapperGenerator\CSharpWrapperGenerator\Templates\ClassGen.tt"
 		if(property.HaveGetter){ 
             
             #line default
             #line hidden
             this.Write("\t\t\tget { return ");
             
-            #line 21 "D:\Documents\Repos\AceRepos\CSharpWrapperGenerator\CSharpWrapperGenerator\Templates\ClassGen.tt"
+            #line 26 "D:\Documents\Repos\AceRepos\CSharpWrapperGenerator\CSharpWrapperGenerator\Templates\ClassGen.tt"
 if(property.IsEnum){ 
             
             #line default
             #line hidden
             this.Write("(ace.");
             
-            #line 21 "D:\Documents\Repos\AceRepos\CSharpWrapperGenerator\CSharpWrapperGenerator\Templates\ClassGen.tt"
+            #line 26 "D:\Documents\Repos\AceRepos\CSharpWrapperGenerator\CSharpWrapperGenerator\Templates\ClassGen.tt"
             this.Write(this.ToStringHelper.ToStringWithCulture(property.Type));
             
             #line default
             #line hidden
             this.Write(")");
             
-            #line 21 "D:\Documents\Repos\AceRepos\CSharpWrapperGenerator\CSharpWrapperGenerator\Templates\ClassGen.tt"
+            #line 26 "D:\Documents\Repos\AceRepos\CSharpWrapperGenerator\CSharpWrapperGenerator\Templates\ClassGen.tt"
 } 
             
             #line default
             #line hidden
             this.Write("CoreInstance.Get");
             
-            #line 21 "D:\Documents\Repos\AceRepos\CSharpWrapperGenerator\CSharpWrapperGenerator\Templates\ClassGen.tt"
+            #line 26 "D:\Documents\Repos\AceRepos\CSharpWrapperGenerator\CSharpWrapperGenerator\Templates\ClassGen.tt"
             this.Write(this.ToStringHelper.ToStringWithCulture(property.Name));
             
             #line default
             #line hidden
             this.Write("(); }\r\n");
             
-            #line 22 "D:\Documents\Repos\AceRepos\CSharpWrapperGenerator\CSharpWrapperGenerator\Templates\ClassGen.tt"
+            #line 27 "D:\Documents\Repos\AceRepos\CSharpWrapperGenerator\CSharpWrapperGenerator\Templates\ClassGen.tt"
 		} 
             
             #line default
             #line hidden
             
-            #line 23 "D:\Documents\Repos\AceRepos\CSharpWrapperGenerator\CSharpWrapperGenerator\Templates\ClassGen.tt"
+            #line 28 "D:\Documents\Repos\AceRepos\CSharpWrapperGenerator\CSharpWrapperGenerator\Templates\ClassGen.tt"
 		if(property.HaveSetter){ 
             
             #line default
             #line hidden
             this.Write("\t\t\tset { CoreInstance.Set");
             
-            #line 24 "D:\Documents\Repos\AceRepos\CSharpWrapperGenerator\CSharpWrapperGenerator\Templates\ClassGen.tt"
+            #line 29 "D:\Documents\Repos\AceRepos\CSharpWrapperGenerator\CSharpWrapperGenerator\Templates\ClassGen.tt"
             this.Write(this.ToStringHelper.ToStringWithCulture(property.Name));
             
             #line default
             #line hidden
             this.Write("(");
             
-            #line 24 "D:\Documents\Repos\AceRepos\CSharpWrapperGenerator\CSharpWrapperGenerator\Templates\ClassGen.tt"
+            #line 29 "D:\Documents\Repos\AceRepos\CSharpWrapperGenerator\CSharpWrapperGenerator\Templates\ClassGen.tt"
 if(property.IsRefForSet){ 
             
             #line default
             #line hidden
             this.Write("ref ");
             
-            #line 24 "D:\Documents\Repos\AceRepos\CSharpWrapperGenerator\CSharpWrapperGenerator\Templates\ClassGen.tt"
+            #line 29 "D:\Documents\Repos\AceRepos\CSharpWrapperGenerator\CSharpWrapperGenerator\Templates\ClassGen.tt"
 } 
             
             #line default
             #line hidden
             
-            #line 25 "D:\Documents\Repos\AceRepos\CSharpWrapperGenerator\CSharpWrapperGenerator\Templates\ClassGen.tt"
+            #line 30 "D:\Documents\Repos\AceRepos\CSharpWrapperGenerator\CSharpWrapperGenerator\Templates\ClassGen.tt"
 if(property.IsEnum){ 
             
             #line default
             #line hidden
             this.Write("(ace.swig.");
             
-            #line 25 "D:\Documents\Repos\AceRepos\CSharpWrapperGenerator\CSharpWrapperGenerator\Templates\ClassGen.tt"
+            #line 30 "D:\Documents\Repos\AceRepos\CSharpWrapperGenerator\CSharpWrapperGenerator\Templates\ClassGen.tt"
             this.Write(this.ToStringHelper.ToStringWithCulture(property.Type));
             
             #line default
             #line hidden
             this.Write(")");
             
-            #line 25 "D:\Documents\Repos\AceRepos\CSharpWrapperGenerator\CSharpWrapperGenerator\Templates\ClassGen.tt"
+            #line 30 "D:\Documents\Repos\AceRepos\CSharpWrapperGenerator\CSharpWrapperGenerator\Templates\ClassGen.tt"
 } 
             
             #line default
             #line hidden
             this.Write("value); }\r\n");
             
-            #line 27 "D:\Documents\Repos\AceRepos\CSharpWrapperGenerator\CSharpWrapperGenerator\Templates\ClassGen.tt"
+            #line 32 "D:\Documents\Repos\AceRepos\CSharpWrapperGenerator\CSharpWrapperGenerator\Templates\ClassGen.tt"
 		} 
             
             #line default
             #line hidden
             this.Write("\t\t}\r\n\r\n");
             
-            #line 30 "D:\Documents\Repos\AceRepos\CSharpWrapperGenerator\CSharpWrapperGenerator\Templates\ClassGen.tt"
+            #line 35 "D:\Documents\Repos\AceRepos\CSharpWrapperGenerator\CSharpWrapperGenerator\Templates\ClassGen.tt"
 	} 
             
             #line default
             #line hidden
             this.Write("\r\n");
             
-            #line 32 "D:\Documents\Repos\AceRepos\CSharpWrapperGenerator\CSharpWrapperGenerator\Templates\ClassGen.tt"
+            #line 37 "D:\Documents\Repos\AceRepos\CSharpWrapperGenerator\CSharpWrapperGenerator\Templates\ClassGen.tt"
 	foreach(var method in classDef.Methods){ 
             
             #line default
             #line hidden
             
-            #line 33 "D:\Documents\Repos\AceRepos\CSharpWrapperGenerator\CSharpWrapperGenerator\Templates\ClassGen.tt"
+            #line 38 "D:\Documents\Repos\AceRepos\CSharpWrapperGenerator\CSharpWrapperGenerator\Templates\ClassGen.tt"
 		var parameterList = string.Join(", ", method.Parameters.Select(x => x.Type + " " + x.Name)); 
             
             #line default
             #line hidden
             this.Write("\t\t/// <summary>\r\n\t\t/// ");
             
-            #line 35 "D:\Documents\Repos\AceRepos\CSharpWrapperGenerator\CSharpWrapperGenerator\Templates\ClassGen.tt"
+            #line 40 "D:\Documents\Repos\AceRepos\CSharpWrapperGenerator\CSharpWrapperGenerator\Templates\ClassGen.tt"
             this.Write(this.ToStringHelper.ToStringWithCulture(method.Brief));
             
             #line default
             #line hidden
             this.Write("\r\n\t\t/// </summary>\r\n");
             
-            #line 37 "D:\Documents\Repos\AceRepos\CSharpWrapperGenerator\CSharpWrapperGenerator\Templates\ClassGen.tt"
+            #line 42 "D:\Documents\Repos\AceRepos\CSharpWrapperGenerator\CSharpWrapperGenerator\Templates\ClassGen.tt"
 		foreach(var p in method.Parameters){ 
             
             #line default
             #line hidden
             this.Write("\t\t/// <param name=\"");
             
-            #line 38 "D:\Documents\Repos\AceRepos\CSharpWrapperGenerator\CSharpWrapperGenerator\Templates\ClassGen.tt"
+            #line 43 "D:\Documents\Repos\AceRepos\CSharpWrapperGenerator\CSharpWrapperGenerator\Templates\ClassGen.tt"
             this.Write(this.ToStringHelper.ToStringWithCulture(p.Name));
             
             #line default
             #line hidden
             this.Write("\">");
             
-            #line 38 "D:\Documents\Repos\AceRepos\CSharpWrapperGenerator\CSharpWrapperGenerator\Templates\ClassGen.tt"
+            #line 43 "D:\Documents\Repos\AceRepos\CSharpWrapperGenerator\CSharpWrapperGenerator\Templates\ClassGen.tt"
             this.Write(this.ToStringHelper.ToStringWithCulture(p.Brief));
             
             #line default
             #line hidden
             this.Write("</param>\r\n");
             
-            #line 39 "D:\Documents\Repos\AceRepos\CSharpWrapperGenerator\CSharpWrapperGenerator\Templates\ClassGen.tt"
+            #line 44 "D:\Documents\Repos\AceRepos\CSharpWrapperGenerator\CSharpWrapperGenerator\Templates\ClassGen.tt"
 		} 
             
             #line default
             #line hidden
             
-            #line 40 "D:\Documents\Repos\AceRepos\CSharpWrapperGenerator\CSharpWrapperGenerator\Templates\ClassGen.tt"
+            #line 45 "D:\Documents\Repos\AceRepos\CSharpWrapperGenerator\CSharpWrapperGenerator\Templates\ClassGen.tt"
 		if(method.ReturnType != "void"){ 
             
             #line default
             #line hidden
             this.Write("\t\t/// <returns>");
             
-            #line 41 "D:\Documents\Repos\AceRepos\CSharpWrapperGenerator\CSharpWrapperGenerator\Templates\ClassGen.tt"
+            #line 46 "D:\Documents\Repos\AceRepos\CSharpWrapperGenerator\CSharpWrapperGenerator\Templates\ClassGen.tt"
             this.Write(this.ToStringHelper.ToStringWithCulture(method.BriefOfReturn));
             
             #line default
             #line hidden
             this.Write("</returns>\r\n");
-            
-            #line 42 "D:\Documents\Repos\AceRepos\CSharpWrapperGenerator\CSharpWrapperGenerator\Templates\ClassGen.tt"
-		} 
-            
-            #line default
-            #line hidden
-            this.Write("\t\tpublic ");
-            
-            #line 43 "D:\Documents\Repos\AceRepos\CSharpWrapperGenerator\CSharpWrapperGenerator\Templates\ClassGen.tt"
-if(method.IsStatic){ 
-            
-            #line default
-            #line hidden
-            this.Write("static ");
-            
-            #line 43 "D:\Documents\Repos\AceRepos\CSharpWrapperGenerator\CSharpWrapperGenerator\Templates\ClassGen.tt"
-} 
-            
-            #line default
-            #line hidden
-            
-            #line 43 "D:\Documents\Repos\AceRepos\CSharpWrapperGenerator\CSharpWrapperGenerator\Templates\ClassGen.tt"
-            this.Write(this.ToStringHelper.ToStringWithCulture(method.ReturnType));
-            
-            #line default
-            #line hidden
-            this.Write(" ");
-            
-            #line 43 "D:\Documents\Repos\AceRepos\CSharpWrapperGenerator\CSharpWrapperGenerator\Templates\ClassGen.tt"
-            this.Write(this.ToStringHelper.ToStringWithCulture(method.Name));
-            
-            #line default
-            #line hidden
-            this.Write("(");
-            
-            #line 43 "D:\Documents\Repos\AceRepos\CSharpWrapperGenerator\CSharpWrapperGenerator\Templates\ClassGen.tt"
-            this.Write(this.ToStringHelper.ToStringWithCulture(parameterList));
-            
-            #line default
-            #line hidden
-            this.Write(")\r\n\t\t{\r\n");
-            
-            #line 45 "D:\Documents\Repos\AceRepos\CSharpWrapperGenerator\CSharpWrapperGenerator\Templates\ClassGen.tt"
-		foreach(var wrapper in method.Parameters.Where(x => x.IsWrappingObject)){ 
-            
-            #line default
-            #line hidden
-            this.Write("\t\t\tvar ");
-            
-            #line 46 "D:\Documents\Repos\AceRepos\CSharpWrapperGenerator\CSharpWrapperGenerator\Templates\ClassGen.tt"
-            this.Write(this.ToStringHelper.ToStringWithCulture(wrapper.Name));
-            
-            #line default
-            #line hidden
-            this.Write("Core = ");
-            
-            #line 46 "D:\Documents\Repos\AceRepos\CSharpWrapperGenerator\CSharpWrapperGenerator\Templates\ClassGen.tt"
-            this.Write(this.ToStringHelper.ToStringWithCulture(wrapper.Name));
-            
-            #line default
-            #line hidden
-            this.Write(" != null ? ");
-            
-            #line 46 "D:\Documents\Repos\AceRepos\CSharpWrapperGenerator\CSharpWrapperGenerator\Templates\ClassGen.tt"
-            this.Write(this.ToStringHelper.ToStringWithCulture(wrapper.Name));
-            
-            #line default
-            #line hidden
-            this.Write(".CoreInstance : null;\r\n");
             
             #line 47 "D:\Documents\Repos\AceRepos\CSharpWrapperGenerator\CSharpWrapperGenerator\Templates\ClassGen.tt"
 		} 
@@ -340,86 +292,175 @@ if(method.IsStatic){
             #line hidden
             
             #line 48 "D:\Documents\Repos\AceRepos\CSharpWrapperGenerator\CSharpWrapperGenerator\Templates\ClassGen.tt"
-		var sendedParameterList = string.Join(", ", method.Parameters.Select(GetParameterUsage));
+		if(method.Note != null){ 
             
             #line default
             #line hidden
-            this.Write("\t\t\t");
-            
-            #line 49 "D:\Documents\Repos\AceRepos\CSharpWrapperGenerator\CSharpWrapperGenerator\Templates\ClassGen.tt"
-if(method.ReturnType != "void"){ 
-            
-            #line default
-            #line hidden
-            this.Write("return ");
-            
-            #line 49 "D:\Documents\Repos\AceRepos\CSharpWrapperGenerator\CSharpWrapperGenerator\Templates\ClassGen.tt"
-} 
-            
-            #line default
-            #line hidden
+            this.Write("\t\t/// <remarks>\r\n\t\t/// ");
             
             #line 50 "D:\Documents\Repos\AceRepos\CSharpWrapperGenerator\CSharpWrapperGenerator\Templates\ClassGen.tt"
-		if(method.ReturnIsEnum){ 
+            this.Write(this.ToStringHelper.ToStringWithCulture(method.Note));
             
             #line default
             #line hidden
-            this.Write("(ace.");
+            this.Write("\r\n\t\t/// </remarks>\r\n");
             
-            #line 50 "D:\Documents\Repos\AceRepos\CSharpWrapperGenerator\CSharpWrapperGenerator\Templates\ClassGen.tt"
-            this.Write(this.ToStringHelper.ToStringWithCulture(method.ReturnType));
-            
-            #line default
-            #line hidden
-            this.Write(")");
-            
-            #line 50 "D:\Documents\Repos\AceRepos\CSharpWrapperGenerator\CSharpWrapperGenerator\Templates\ClassGen.tt"
+            #line 52 "D:\Documents\Repos\AceRepos\CSharpWrapperGenerator\CSharpWrapperGenerator\Templates\ClassGen.tt"
 		} 
             
             #line default
             #line hidden
+            this.Write("\t\tpublic ");
             
-            #line 51 "D:\Documents\Repos\AceRepos\CSharpWrapperGenerator\CSharpWrapperGenerator\Templates\ClassGen.tt"
-		if(method.IsStatic){ 
-            
-            #line default
-            #line hidden
-            
-            #line 51 "D:\Documents\Repos\AceRepos\CSharpWrapperGenerator\CSharpWrapperGenerator\Templates\ClassGen.tt"
-            this.Write(this.ToStringHelper.ToStringWithCulture(classDef.Name));
+            #line 53 "D:\Documents\Repos\AceRepos\CSharpWrapperGenerator\CSharpWrapperGenerator\Templates\ClassGen.tt"
+if(method.IsStatic){ 
             
             #line default
             #line hidden
+            this.Write("static ");
             
-            #line 51 "D:\Documents\Repos\AceRepos\CSharpWrapperGenerator\CSharpWrapperGenerator\Templates\ClassGen.tt"
-}else{ 
-            
-            #line default
-            #line hidden
-            this.Write("CoreInstance");
-            
-            #line 51 "D:\Documents\Repos\AceRepos\CSharpWrapperGenerator\CSharpWrapperGenerator\Templates\ClassGen.tt"
+            #line 53 "D:\Documents\Repos\AceRepos\CSharpWrapperGenerator\CSharpWrapperGenerator\Templates\ClassGen.tt"
 } 
             
             #line default
             #line hidden
-            this.Write(".");
             
-            #line 52 "D:\Documents\Repos\AceRepos\CSharpWrapperGenerator\CSharpWrapperGenerator\Templates\ClassGen.tt"
+            #line 53 "D:\Documents\Repos\AceRepos\CSharpWrapperGenerator\CSharpWrapperGenerator\Templates\ClassGen.tt"
+            this.Write(this.ToStringHelper.ToStringWithCulture(method.ReturnType));
+            
+            #line default
+            #line hidden
+            this.Write(" ");
+            
+            #line 53 "D:\Documents\Repos\AceRepos\CSharpWrapperGenerator\CSharpWrapperGenerator\Templates\ClassGen.tt"
             this.Write(this.ToStringHelper.ToStringWithCulture(method.Name));
             
             #line default
             #line hidden
             this.Write("(");
             
-            #line 52 "D:\Documents\Repos\AceRepos\CSharpWrapperGenerator\CSharpWrapperGenerator\Templates\ClassGen.tt"
+            #line 53 "D:\Documents\Repos\AceRepos\CSharpWrapperGenerator\CSharpWrapperGenerator\Templates\ClassGen.tt"
+            this.Write(this.ToStringHelper.ToStringWithCulture(parameterList));
+            
+            #line default
+            #line hidden
+            this.Write(")\r\n\t\t{\r\n");
+            
+            #line 55 "D:\Documents\Repos\AceRepos\CSharpWrapperGenerator\CSharpWrapperGenerator\Templates\ClassGen.tt"
+		foreach(var wrapper in method.Parameters.Where(x => x.IsWrappingObject)){ 
+            
+            #line default
+            #line hidden
+            this.Write("\t\t\tvar ");
+            
+            #line 56 "D:\Documents\Repos\AceRepos\CSharpWrapperGenerator\CSharpWrapperGenerator\Templates\ClassGen.tt"
+            this.Write(this.ToStringHelper.ToStringWithCulture(wrapper.Name));
+            
+            #line default
+            #line hidden
+            this.Write("Core = ");
+            
+            #line 56 "D:\Documents\Repos\AceRepos\CSharpWrapperGenerator\CSharpWrapperGenerator\Templates\ClassGen.tt"
+            this.Write(this.ToStringHelper.ToStringWithCulture(wrapper.Name));
+            
+            #line default
+            #line hidden
+            this.Write(" != null ? ");
+            
+            #line 56 "D:\Documents\Repos\AceRepos\CSharpWrapperGenerator\CSharpWrapperGenerator\Templates\ClassGen.tt"
+            this.Write(this.ToStringHelper.ToStringWithCulture(wrapper.Name));
+            
+            #line default
+            #line hidden
+            this.Write(".CoreInstance : null;\r\n");
+            
+            #line 57 "D:\Documents\Repos\AceRepos\CSharpWrapperGenerator\CSharpWrapperGenerator\Templates\ClassGen.tt"
+		} 
+            
+            #line default
+            #line hidden
+            
+            #line 58 "D:\Documents\Repos\AceRepos\CSharpWrapperGenerator\CSharpWrapperGenerator\Templates\ClassGen.tt"
+		var sendedParameterList = string.Join(", ", method.Parameters.Select(GetParameterUsage));
+            
+            #line default
+            #line hidden
+            this.Write("\t\t\t");
+            
+            #line 59 "D:\Documents\Repos\AceRepos\CSharpWrapperGenerator\CSharpWrapperGenerator\Templates\ClassGen.tt"
+if(method.ReturnType != "void"){ 
+            
+            #line default
+            #line hidden
+            this.Write("return ");
+            
+            #line 59 "D:\Documents\Repos\AceRepos\CSharpWrapperGenerator\CSharpWrapperGenerator\Templates\ClassGen.tt"
+} 
+            
+            #line default
+            #line hidden
+            
+            #line 60 "D:\Documents\Repos\AceRepos\CSharpWrapperGenerator\CSharpWrapperGenerator\Templates\ClassGen.tt"
+		if(method.ReturnIsEnum){ 
+            
+            #line default
+            #line hidden
+            this.Write("(ace.");
+            
+            #line 60 "D:\Documents\Repos\AceRepos\CSharpWrapperGenerator\CSharpWrapperGenerator\Templates\ClassGen.tt"
+            this.Write(this.ToStringHelper.ToStringWithCulture(method.ReturnType));
+            
+            #line default
+            #line hidden
+            this.Write(")");
+            
+            #line 60 "D:\Documents\Repos\AceRepos\CSharpWrapperGenerator\CSharpWrapperGenerator\Templates\ClassGen.tt"
+		} 
+            
+            #line default
+            #line hidden
+            
+            #line 61 "D:\Documents\Repos\AceRepos\CSharpWrapperGenerator\CSharpWrapperGenerator\Templates\ClassGen.tt"
+		if(method.IsStatic){ 
+            
+            #line default
+            #line hidden
+            
+            #line 61 "D:\Documents\Repos\AceRepos\CSharpWrapperGenerator\CSharpWrapperGenerator\Templates\ClassGen.tt"
+            this.Write(this.ToStringHelper.ToStringWithCulture(classDef.Name));
+            
+            #line default
+            #line hidden
+            
+            #line 61 "D:\Documents\Repos\AceRepos\CSharpWrapperGenerator\CSharpWrapperGenerator\Templates\ClassGen.tt"
+}else{ 
+            
+            #line default
+            #line hidden
+            this.Write("CoreInstance");
+            
+            #line 61 "D:\Documents\Repos\AceRepos\CSharpWrapperGenerator\CSharpWrapperGenerator\Templates\ClassGen.tt"
+} 
+            
+            #line default
+            #line hidden
+            this.Write(".");
+            
+            #line 62 "D:\Documents\Repos\AceRepos\CSharpWrapperGenerator\CSharpWrapperGenerator\Templates\ClassGen.tt"
+            this.Write(this.ToStringHelper.ToStringWithCulture(method.Name));
+            
+            #line default
+            #line hidden
+            this.Write("(");
+            
+            #line 62 "D:\Documents\Repos\AceRepos\CSharpWrapperGenerator\CSharpWrapperGenerator\Templates\ClassGen.tt"
             this.Write(this.ToStringHelper.ToStringWithCulture(sendedParameterList));
             
             #line default
             #line hidden
             this.Write(");\r\n\t\t}\r\n\r\n");
             
-            #line 55 "D:\Documents\Repos\AceRepos\CSharpWrapperGenerator\CSharpWrapperGenerator\Templates\ClassGen.tt"
+            #line 65 "D:\Documents\Repos\AceRepos\CSharpWrapperGenerator\CSharpWrapperGenerator\Templates\ClassGen.tt"
 	} 
             
             #line default
@@ -428,7 +469,7 @@ if(method.ReturnType != "void"){
             return this.GenerationEnvironment.ToString();
         }
         
-        #line 58 "D:\Documents\Repos\AceRepos\CSharpWrapperGenerator\CSharpWrapperGenerator\Templates\ClassGen.tt"
+        #line 68 "D:\Documents\Repos\AceRepos\CSharpWrapperGenerator\CSharpWrapperGenerator\Templates\ClassGen.tt"
 
 	private string GetParameterUsage(ParameterDef parameter)
 	{

@@ -53,7 +53,11 @@ value); }
 		public <#if(method.IsStatic){ #>static <#} #><#=method.ReturnType #> <#=method.Name #>(<#= parameterList#>)
 		{
 <#		foreach(var wrapper in method.Parameters.Where(x => x.IsWrappingObject)){ #>
-			var <#=wrapper.Name #>Core = <#=wrapper.Name #> != null ? <#=wrapper.Name #>.CoreInstance : null;
+			asd.swig.<#= wrapper.CoreType #> <#=wrapper.Name #>Core = null;
+			if(<#=wrapper.Name #> != null)
+			{
+				<#=wrapper.Name #>Core = <#=wrapper.Name #>.CoreInstance;
+			}
 <#		} #>
 <#		var sendedParameterList = string.Join(", ", method.Parameters.Select(GetParameterUsage));#>
 			<#if(method.ReturnType != "void"){ #>return <#} #>

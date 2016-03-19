@@ -128,6 +128,7 @@ namespace CSharpWrapperGenerator
 				{
 					parameter.IsEnum = swig.EnumDefs.Any(x => x.Name == parameter.Type);
 					parameter.IsWrappingObject = swig.ClassDefs.Any(x => x.Name == parameter.Type);
+					parameter.CoreType = parameter.Type;
 					if(coreNameToEngineName.ContainsKey(parameter.Type))
 					{
 						parameter.Type = coreNameToEngineName[parameter.Type];

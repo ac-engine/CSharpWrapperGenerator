@@ -54,6 +54,7 @@ namespace CSharpWrapperGenerator
 	class ParameterDef
 	{
 		public string Type = string.Empty;
+		public string CoreType = string.Empty;
 		public string Name = string.Empty;
 		public string Brief = string.Empty;
 		public bool IsRef = false;

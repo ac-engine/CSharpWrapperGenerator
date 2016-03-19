@@ -84,7 +84,7 @@ namespace CSharpWrapperGenerator.Templates
             
             #line default
             #line hidden
-            this.Write(" ace.swig.");
+            this.Write(" asd.swig.");
             
             #line 17 "D:\Documents\Repos\AceRepos\CSharpWrapperGenerator\CSharpWrapperGenerator\Templates\ClassGen.tt"
             this.Write(this.ToStringHelper.ToStringWithCulture(classDef.Name));
@@ -133,7 +133,7 @@ if(property.IsEnum){
             
             #line default
             #line hidden
-            this.Write("(ace.");
+            this.Write("(asd.");
             
             #line 26 "D:\Documents\Repos\AceRepos\CSharpWrapperGenerator\CSharpWrapperGenerator\Templates\ClassGen.tt"
             this.Write(this.ToStringHelper.ToStringWithCulture(property.Type));
@@ -194,7 +194,7 @@ if(property.IsEnum){
             
             #line default
             #line hidden
-            this.Write("(ace.swig.");
+            this.Write("(asd.swig.");
             
             #line 30 "D:\Documents\Repos\AceRepos\CSharpWrapperGenerator\CSharpWrapperGenerator\Templates\ClassGen.tt"
             this.Write(this.ToStringHelper.ToStringWithCulture(property.Type));
@@ -405,7 +405,7 @@ if(method.ReturnType != "void"){
             
             #line default
             #line hidden
-            this.Write("(ace.");
+            this.Write("(asd.");
             
             #line 60 "D:\Documents\Repos\AceRepos\CSharpWrapperGenerator\CSharpWrapperGenerator\Templates\ClassGen.tt"
             this.Write(this.ToStringHelper.ToStringWithCulture(method.ReturnType));
@@ -480,7 +480,7 @@ if(method.ReturnType != "void"){
 		}
 		if(parameter.IsEnum)
 		{
-			result += "(ace.swig." + parameter.Type + ")";
+			result += "(asd.swig." + parameter.Type + ")";
 		}
 		result += parameter.Name;
 		if(parameter.IsWrappingObject)

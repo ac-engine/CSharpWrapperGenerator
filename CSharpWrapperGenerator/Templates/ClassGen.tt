@@ -35,7 +35,7 @@ value); }
 <#	} #>
 
 <#	foreach(var method in classDef.Methods){ #>
-<#		var parameterList = string.Join(", ", method.Parameters.Select(x => x.Type + " " + x.Name)); #>
+<#		var parameterList = string.Join(", ", method.Parameters.Select(GetParameterListItem)); #>
 		/// <summary>
 		/// <#=method.Brief #>
 		/// </summary>
@@ -70,6 +70,18 @@ value); }
 	}
 
 <#+
+	private string GetParameterListItem(ParameterDef parameter)
+	{
+		string result = "";
+		if(parameter.IsRef)
+		{
+			result += "ref ";
+		}
+		result += parameter.Type + " ";
+		result += parameter.Name;
+		return result;
+	}
+
 	private string GetParameterUsage(ParameterDef parameter)
 	{
 		string result = "";
